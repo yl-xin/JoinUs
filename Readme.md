@@ -47,6 +47,43 @@ app.get('/',
 4. Pass `count` data into home.ejs as an object:
 `res.render("home",{count:count});`
 5. Write HTMl inside home.ejs. In EJS, run JavaScript inside `<%= %>` bracket. Access the count data:`<%=count%>`
+```
+<h1>JOIN US</h1>
+ 
+<p class="lead">Enter your email to join <strong><%= count %></strong> 
+others on our waitlist. We are 100% not a cult. </p>
+ 
+<form method="POST" action='/register'>
+ <input type="text" class="form" name="email" placeholder="Enter Your Email">
+ <button>Join Now</button>
+</form>
+```
+
+### Add a POST route in app.js
+1. Install [body-parser package](https://github.com/expressjs/body-parser) to parse request into a JS object. In terminal: `npm i --s body-parser`
+2. In app.js, import body-parser:
+```
+const bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({extended:true}));
+app.post('/register',(req,res)=>{
+	console.log(req.body.email);
+});
+```
+2. insert the email into DB using mysql package:
+```
+app.post('/register',(req,res)=>{
+	var person = {email: req.body.email};
+ 	connection.query('INSERT INTO users SET ?', person, function(err, result) {
+ 	console.log(err);
+ 	console.log(result);
+ 	res.redirect("/");
+	});
+});
+```
+
+### Add some styling
+1. In app.js, tell express to take files in public directory and serve them to views: `app.use(express.static(__dirname+"/public");`
+2. Add styling in app.css in public directory.
 
 ### Run the app
 Start running the app on server: `node app.js`
